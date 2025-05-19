@@ -1,26 +1,27 @@
-// src/App.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect, iAmReady } from "@tiendanube/nexo/helpers";
 import nexo from "@tiendanube/nexo";
 
 function App() {
-  useEffect(() => {
-    async function iniciar() {
-      try {
-        await connect(nexo);
-        iAmReady(nexo); // Informa ao admin da Nuvemshop que o app está pronto
-      } catch (err) {
-        console.error("Erro ao conectar com Nexo:", err);
-      }
-    }
+  const [isConnected, setIsConnected] = useState(false);
 
-    iniciar();
+  useEffect(() => {
+    connect(nexo).then(() => {
+      setIsConnected(true);
+      iAmReady(nexo);
+    }).catch((err) => {
+      console.error("Erro ao conectar com Nexo:", err);
+    });
   }, []);
 
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>Comprei Agora 🚀</h1>
-      <p>Seu app está rodando com sucesso dentro da Nuvemshop.</p>
+      {isConnected ? (
+        <p>App conectado com sucesso à Nuvemshop!</p>
+      ) : (
+        <p>Conectando com Nuvemshop...</p>
+      )}
     </div>
   );
 }
